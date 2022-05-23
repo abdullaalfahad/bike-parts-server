@@ -18,11 +18,19 @@ async function run() {
     try {
         await client.connect();
         const toolCollection = client.db('manufacture').collection('tools');
+        const reviewCollection = client.db('manufacture').collection('reviews');
+
+        app.get('/reviews', async (req, res) => {
+            const cursor = await reviewCollection.find().toArray();
+            res.send(cursor);
+        })
 
         app.get('/tools', async (req, res) => {
             const cursor = await toolCollection.find().toArray();
             res.send(cursor);
         })
+
+
 
     }
 
