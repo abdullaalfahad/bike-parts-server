@@ -11,14 +11,25 @@ app.use(cors());
 app.use(express.json());
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER}@cluster0.pk2nl.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pk2nl.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    // perform actions on the collection object
-    console.log("db connected")
-    client.close();
-});
+
+async function run() {
+    try {
+        await client.connect();
+        const toolCollection = client.db('manufacture').collection('tools');
+
+        app.get('/tools', async (req, res) => {
+            const cursor = await toolCollection.find().toArray();
+            res.send(cursor);
+        })
+
+    }
+
+    finally { }
+
+}
+run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
