@@ -19,6 +19,7 @@ async function run() {
         await client.connect();
         const toolCollection = client.db('manufacture').collection('tools');
         const reviewCollection = client.db('manufacture').collection('reviews');
+        const orderCollection = client.db('manufacture').collection('orders');
 
         app.get('/reviews', async (req, res) => {
             const cursor = await reviewCollection.find().toArray();
@@ -35,6 +36,26 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const tool = await toolCollection.findOne(query);
             res.send(tool);
+        })
+
+        app.put('/tools/:id', async (req, res) => {
+            const id = req.params.id;
+            const updated = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    available: updated.available
+                }
+            }
+            const result = await toolCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+        app.post('/order', async (req, res) => {
+            const item = req.body;
+            const result = await orderCollection.insertOne(item);
+            res.send(result);
         })
 
     }
