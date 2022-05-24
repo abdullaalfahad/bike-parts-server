@@ -21,11 +21,13 @@ async function run() {
         const reviewCollection = client.db('manufacture').collection('reviews');
         const orderCollection = client.db('manufacture').collection('orders');
 
+        // reviews api 
         app.get('/reviews', async (req, res) => {
             const cursor = await reviewCollection.find().toArray();
             res.send(cursor);
         })
 
+        // tools api
         app.get('/tools', async (req, res) => {
             const cursor = await toolCollection.find().toArray();
             res.send(cursor);
@@ -52,10 +54,18 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/order', async (req, res) => {
+        // orders api 
+        app.post('/orders', async (req, res) => {
             const item = req.body;
             const result = await orderCollection.insertOne(item);
             res.send(result);
+        })
+
+        app.get('/order', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const order = await orderCollection.find(query).toArray();
+            res.send(order);
         })
 
     }
