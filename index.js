@@ -51,10 +51,21 @@ async function run() {
             res.send({ result, token });
         })
 
+        app.get('/users', verifyJWT, async (req, res) => {
+            const users = await userCollection.find().toArray();
+            res.send(users);
+        })
+
         // reviews api 
         app.get('/reviews', async (req, res) => {
             const cursor = await reviewCollection.find().toArray();
             res.send(cursor);
+        })
+
+        app.post('/reviews', verifyJWT, async (req, res) => {
+            const item = req.body;
+            const result = await reviewCollection.insertOne(item);
+            res.send(result);
         })
 
         // tools api
