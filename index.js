@@ -17,9 +17,24 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
+        const userCollection = client.db('manufacture').collection('users');
         const toolCollection = client.db('manufacture').collection('tools');
         const reviewCollection = client.db('manufacture').collection('reviews');
         const orderCollection = client.db('manufacture').collection('orders');
+
+        // user api
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+            res.send({ result, token });
+        })
 
         // reviews api 
         app.get('/reviews', async (req, res) => {
