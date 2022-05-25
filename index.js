@@ -136,6 +136,11 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/tool', verifyJWT, verifyAdmin, async (req, res) => {
+            const tool = await toolCollection.find().toArray();
+            res.send(tool);
+        })
+
         // orders api 
         app.post('/orders', async (req, res) => {
             const item = req.body;
