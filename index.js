@@ -141,6 +141,13 @@ async function run() {
             res.send(tool);
         })
 
+        app.delete('/tool/:_id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params._id;
+            const filter = { _id: ObjectId(id) };
+            const result = await toolCollection.deleteOne(filter);
+            res.send(result);
+        })
+
         // orders api 
         app.post('/orders', async (req, res) => {
             const item = req.body;
