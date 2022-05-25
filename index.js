@@ -84,6 +84,31 @@ async function run() {
             }
         })
 
+        app.put('/users/:email', verifyJWT, async (req, res) => {
+            const email = req.params.email;
+            const updatedUser = req.body;
+            console.log(updatedUser);
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    phone: updatedUser.phone,
+                    education: updatedUser.education,
+                    location: updatedUser.location,
+                    linkedin: updatedUser.linkedin,
+                }
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        app.get('/users/:email', verifyJWT, async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const users = await userCollection.findOne(query);
+            res.send(users);
+        })
+
         app.get('/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
