@@ -143,7 +143,7 @@ async function run() {
             res.send(tool);
         })
 
-        app.put('/tools/:id', async (req, res) => {
+        app.patch('/tools/:id', async (req, res) => {
             const id = req.params.id;
             const updated = req.body;
             const filter = { _id: ObjectId(id) };
