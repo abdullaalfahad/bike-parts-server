@@ -38,6 +38,7 @@ async function run() {
         const reviewCollection = client.db('manufacture').collection('reviews');
         const orderCollection = client.db('manufacture').collection('orders');
         const paymentCollection = client.db('manufacture').collection('payment');
+        const professionalCollection = client.db('manufacture').collection('professionals');
 
         const verifyAdmin = async (req, res, next) => {
             const requester = req.decoded.email;
@@ -49,6 +50,12 @@ async function run() {
                 res.status(403).send({ message: 'Forbidden' });
             }
         }
+
+        // professional api
+        app.get('/professionals', async (req, res) => {
+            const professionals = await professionalCollection.find().toArray();
+            res.send(professionals);
+        })
 
         // user api
         app.put('/user/:email', async (req, res) => {
