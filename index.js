@@ -209,6 +209,11 @@ async function run() {
             res.send(order);
         })
 
+        app.get('/orders', verifyJWT, verifyAdmin, async (req, res) => {
+            const order = await orderCollection.find().toArray();
+            res.send(order);
+        })
+
         app.post('/create-payment-intent', async (req, res) => {
             const { totalPrice } = req.body;
             const amount = totalPrice * 100;
