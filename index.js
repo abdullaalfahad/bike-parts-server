@@ -214,6 +214,18 @@ async function run() {
             res.send(order);
         })
 
+        app.put('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const action = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: action,
+            }
+            const updatedOrder = await orderCollection.updateOne(filter, updateDoc, options);
+            res.send(updatedOrder);
+        })
+
         app.post('/create-payment-intent', async (req, res) => {
             const { totalPrice } = req.body;
             const amount = totalPrice * 100;
