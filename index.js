@@ -143,20 +143,6 @@ async function run() {
             res.send(tool);
         })
 
-        app.patch('/tools/:id', async (req, res) => {
-            const id = req.params.id;
-            const updated = req.body;
-            const filter = { _id: ObjectId(id) };
-            const options = { upsert: true };
-            const updatedDoc = {
-                $set: {
-                    available: updated.available
-                }
-            }
-            const result = await toolCollection.updateOne(filter, updatedDoc, options);
-            res.send(result);
-        })
-
         app.post('/tools', verifyJWT, verifyAdmin, async (req, res) => {
             const tool = req.body;
             const result = await toolCollection.insertOne(tool);
